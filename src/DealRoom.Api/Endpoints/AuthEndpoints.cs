@@ -7,16 +7,30 @@ public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this WebApplication app)
     {
-        app.MapPost("/auth/register", async (RegisterRequest request, IAuthService authService) =>
+        var group = app.MapGroup("/auth").WithTags("Auth");
+
+        group.MapPost("/register", async (RegisterRequest request, IAuthService authService) =>
         {
             var result = await authService.RegisterAsync(request);
             return Results.Ok(result);
-        });
+        })
+        .Produces<AuthResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status409Conflict);
 
-        app.MapPost("/auth/login", async (LoginRequest request, IAuthService authService) =>
+        group.MapPost("/login", async (LoginRequest request, IAuthService authService) =>
         {
             var result = await authService.LoginAsync(request);
             return Results.Ok(result);
-        });
+        })
+        .Produces<AuthResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
+
+        group.MapPost("/refresh", async (RefreshRequest request, IAuthService authService) =>
+        {
+            var result = await authService.RefreshAsync(request);
+            return Results.Ok(result);
+        })
+        .Produces<AuthResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
     }
 }
