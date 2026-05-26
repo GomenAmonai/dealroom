@@ -1,0 +1,6 @@
+@DealRoom.Api_HostAddress = http://localhost:5201
+
+GET {{DealRoom.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
