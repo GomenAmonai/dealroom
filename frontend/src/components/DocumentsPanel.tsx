@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, useRef, useState } from "react";
+import { Check, Download, FileText, Upload, X } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
 import type { DocumentResponse } from "@/lib/types";
 
@@ -47,41 +48,51 @@ export default function DocumentsPanel({
   }
 
   return (
-    <section className="flex h-[30rem] flex-col rounded-2xl border border-line bg-surface/70 shadow-card">
+    <section className="flex h-[30rem] flex-col rounded-xl border border-line bg-surface shadow-card">
       <div className="flex items-center justify-between border-b border-line px-5 py-3">
-        <h2 className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-          <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden />
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-ink">
+          <FileText size={15} className="text-muted" aria-hidden />
           Documents
         </h2>
-        <label className="cursor-pointer rounded-lg border border-gold/40 bg-gold-dim px-3 py-1.5 text-xs font-medium text-gold transition hover:bg-gold/20">
-          {uploading ? "Uploading…" : "+ Upload"}
+        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-xs font-medium text-ink transition hover:border-accent hover:text-accent">
+          <Upload size={13} aria-hidden />
+          {uploading ? "Uploading…" : "Upload"}
           <input ref={inputRef} type="file" className="hidden" disabled={uploading} onChange={handleFile} />
         </label>
       </div>
 
       <div className="scroll-slim flex-1 overflow-y-auto px-5 py-4">
-        {error && <p className="mb-2 text-sm text-rose-300">{error}</p>}
-        {documents.length === 0 && <p className="text-sm text-faint">No documents uploaded yet.</p>}
+        {error && <p className="mb-2 text-sm text-rose-600">{error}</p>}
+        {documents.length === 0 && (
+          <div className="flex flex-col items-center gap-2 py-12 text-center">
+            <FileText size={20} className="text-faint" aria-hidden />
+            <p className="text-sm text-muted">No documents yet.</p>
+          </div>
+        )}
 
-        <ul className="space-y-3">
+        <ul className="space-y-2.5">
           {documents.map((document) => {
             const canReview =
               document.status === "Pending" && document.uploadedByOrganizationId !== myOrgId;
             return (
-              <li key={document.id} className="rounded-xl border border-line bg-surface-raised/60 p-3.5">
+              <li key={document.id} className="rounded-lg border border-line p-3">
                 <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-fg">{document.fileName}</p>
-                    <p className="mt-0.5 font-mono text-xs text-faint">{formatBytes(document.sizeBytes)}</p>
+                  <div className="flex min-w-0 items-start gap-2.5">
+                    <FileText size={16} className="mt-0.5 shrink-0 text-faint" aria-hidden />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-ink">{document.fileName}</p>
+                      <p className="mt-0.5 font-mono text-xs text-faint">{formatBytes(document.sizeBytes)}</p>
+                    </div>
                   </div>
                   <StatusBadge status={document.status} />
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-2.5 flex flex-wrap gap-2 pl-[26px]">
                   <button
                     type="button"
                     onClick={() => onDownload(document)}
-                    className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted transition hover:border-gold/40 hover:text-fg"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-line px-2.5 py-1 text-xs text-muted transition hover:border-accent hover:text-accent"
                   >
+                    <Download size={13} aria-hidden />
                     Download
                   </button>
                   {canReview && (
@@ -89,15 +100,17 @@ export default function DocumentsPanel({
                       <button
                         type="button"
                         onClick={() => onApprove(document.id)}
-                        className="rounded-lg bg-emerald-500/90 px-2.5 py-1 text-xs font-medium text-ink transition hover:bg-emerald-400"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-2.5 py-1 text-xs font-medium text-paper transition hover:bg-accent-hover"
                       >
+                        <Check size={13} aria-hidden />
                         Approve
                       </button>
                       <button
                         type="button"
                         onClick={() => onReject(document.id)}
-                        className="rounded-lg bg-rose-500/90 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-rose-500"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 transition hover:bg-rose-100"
                       >
+                        <X size={13} aria-hidden />
                         Reject
                       </button>
                     </>

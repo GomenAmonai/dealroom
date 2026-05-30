@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Briefcase, LogOut } from "lucide-react";
+import Logo from "@/components/Logo";
 import { clearTokens, isAuthenticated } from "@/lib/auth";
 import { organizationsApi } from "@/lib/api";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [orgName, setOrgName] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -30,31 +33,56 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   if (!ready) return null;
 
+  const navActive = pathname.startsWith("/deals");
+
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-20 border-b border-line bg-ink/70 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
-          <Link href="/deals" className="flex items-center gap-2.5">
-            <span className="h-2.5 w-2.5 rotate-45 bg-gold shadow-glow" aria-hidden />
-            <span className="font-display text-xl font-semibold tracking-tight text-fg">DealRoom</span>
+    <div className="flex min-h-screen">
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-line bg-surface md:flex">
+        <div className="px-5 py-5">
+          <Link href="/deals">
+            <Logo />
           </Link>
-          <div className="flex items-center gap-3 text-sm">
-            {orgName && (
-              <span className="hidden rounded-full border border-line bg-surface px-3 py-1 font-mono text-xs text-muted sm:inline">
-                {orgName}
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={logout}
-              className="rounded-lg border border-line px-3 py-1.5 text-muted transition hover:border-gold/40 hover:text-fg"
-            >
-              Log out
-            </button>
-          </div>
         </div>
-      </header>
-      <main className="mx-auto max-w-5xl px-5 py-10">{children}</main>
+        <nav className="flex-1 px-3">
+          <Link
+            href="/deals"
+            className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+              navActive ? "bg-accent-soft text-accent" : "text-muted hover:bg-paper hover:text-ink"
+            }`}
+          >
+            <Briefcase size={16} aria-hidden />
+            Deals
+          </Link>
+        </nav>
+        <div className="border-t border-line p-3">
+          {orgName && (
+            <div className="mb-2 px-2">
+              <p className="text-[11px] uppercase tracking-wide text-faint">Organization</p>
+              <p className="truncate text-sm font-medium text-ink">{orgName}</p>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={logout}
+            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted transition hover:bg-paper hover:text-ink"
+          >
+            <LogOut size={16} aria-hidden />
+            Log out
+          </button>
+        </div>
+      </aside>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center justify-between border-b border-line bg-surface px-4 py-3 md:hidden">
+          <Link href="/deals">
+            <Logo />
+          </Link>
+          <button type="button" onClick={logout} aria-label="Log out" className="text-muted">
+            <LogOut size={18} aria-hidden />
+          </button>
+        </header>
+        <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-9">{children}</main>
+      </div>
     </div>
   );
 }
