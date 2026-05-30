@@ -7,6 +7,10 @@ import StatusBadge from "@/components/StatusBadge";
 import { ApiError, dealsApi } from "@/lib/api";
 import type { DealResponse } from "@/lib/types";
 
+const inputClass =
+  "w-full rounded-lg border border-line bg-surface-input px-3.5 py-2.5 text-sm text-fg placeholder-faint outline-none transition focus:border-gold/50 focus:ring-2 focus:ring-gold/15";
+const labelClass = "mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted";
+
 export default function DealsPage() {
   const [deals, setDeals] = useState<DealResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,14 +50,17 @@ export default function DealsPage() {
 
   return (
     <AppShell>
-      <h1 className="text-2xl font-semibold text-slate-900">Deals</h1>
+      <div className="animate-fade-up">
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold">Your workspace</p>
+        <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-fg">Deals</h1>
+      </div>
 
       <form
         onSubmit={handleCreate}
-        className="mt-6 grid gap-4 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-[1fr_220px_auto] sm:items-end"
+        className="mt-7 grid animate-fade-up gap-4 rounded-2xl border border-line bg-surface/70 p-5 shadow-card sm:grid-cols-[1fr_200px_auto] sm:items-end"
       >
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-slate-700">
+          <label htmlFor="title" className={labelClass}>
             Deal title
           </label>
           <input
@@ -62,12 +69,12 @@ export default function DealsPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Supply contract"
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className={inputClass}
           />
         </div>
         <div>
-          <label htmlFor="counterparty" className="block text-sm font-medium text-slate-700">
-            Counterparty org ID
+          <label htmlFor="counterparty" className={labelClass}>
+            Counterparty ID
           </label>
           <input
             id="counterparty"
@@ -77,24 +84,26 @@ export default function DealsPage() {
             value={counterpartyId}
             onChange={(e) => setCounterpartyId(e.target.value)}
             placeholder="e.g. 2"
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className={`${inputClass} font-mono`}
           />
         </div>
         <button
           type="submit"
           disabled={creating}
-          className="h-[38px] rounded-md bg-brand-600 px-4 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
+          className="h-[42px] rounded-lg bg-gold px-5 text-sm font-semibold text-ink transition hover:bg-gold-soft disabled:opacity-60"
         >
-          {creating ? "Creating…" : "Create deal"}
+          {creating ? "Creating…" : "Create"}
         </button>
-        {createError && <p className="text-sm text-rose-600 sm:col-span-3">{createError}</p>}
+        {createError && <p className="text-sm text-rose-300 sm:col-span-3">{createError}</p>}
       </form>
 
       <div className="mt-8">
-        {loading && <p className="text-sm text-slate-500">Loading deals…</p>}
-        {error && <p className="text-sm text-rose-600">{error}</p>}
+        {loading && <p className="text-sm text-muted">Loading deals…</p>}
+        {error && <p className="text-sm text-rose-300">{error}</p>}
         {!loading && !error && deals.length === 0 && (
-          <p className="text-sm text-slate-500">No deals yet. Create your first one above.</p>
+          <p className="rounded-2xl border border-dashed border-line bg-surface/40 px-5 py-10 text-center text-sm text-muted">
+            No deals yet. Open your first one above.
+          </p>
         )}
 
         <ul className="space-y-3">
@@ -102,15 +111,21 @@ export default function DealsPage() {
             <li key={deal.id}>
               <Link
                 href={`/deals/${deal.id}`}
-                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 transition hover:border-brand-300 hover:shadow-sm"
+                className="group flex items-center justify-between rounded-xl border border-line bg-surface/60 p-4 transition hover:border-gold/30 hover:bg-surface"
               >
-                <div>
-                  <p className="font-medium text-slate-900">{deal.title}</p>
-                  <p className="mt-0.5 text-sm text-slate-500">
-                    {deal.initiatorOrganizationName} ↔ {deal.counterpartyOrganizationName}
+                <div className="min-w-0">
+                  <p className="truncate font-medium text-fg">{deal.title}</p>
+                  <p className="mt-1 truncate font-mono text-xs text-muted">
+                    {deal.initiatorOrganizationName} <span className="text-gold">↔</span>{" "}
+                    {deal.counterpartyOrganizationName}
                   </p>
                 </div>
-                <StatusBadge status={deal.status} />
+                <div className="flex items-center gap-4 pl-4">
+                  <StatusBadge status={deal.status} />
+                  <span className="text-muted transition group-hover:translate-x-0.5 group-hover:text-gold" aria-hidden>
+                    →
+                  </span>
+                </div>
               </Link>
             </li>
           ))}
