@@ -1,5 +1,4 @@
 using DealRoom.Core.Entities;
-using System.Threading.Tasks;
 
 namespace DealRoom.Core.Interfaces;
 

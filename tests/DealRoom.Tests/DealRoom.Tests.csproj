@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\DealRoom.Api\DealRoom.Api.csproj" />
     <ProjectReference Include="..\..\src\DealRoom.Core\DealRoom.Core.csproj" />
+    <ProjectReference Include="..\..\src\DealRoom.Infrastructure\DealRoom.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
