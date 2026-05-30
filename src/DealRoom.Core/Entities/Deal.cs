@@ -9,5 +9,5 @@ public class Deal {
     public int CounterpartyOrganizationId { get; set; }
     public Organization CounterpartyOrganization { get; set;} = null!;
     public DateTime CreatedAt { get; set;}
-
+    public DateTime? UpdatedAt { get; set;}
 }

@@ -1,0 +1,12 @@
+**/bin
+**/obj
+frontend/node_modules
+frontend/.next
+frontend/out
+.git
+.github
+.vs
+.vscode
+*.user
+.env
+.DS_Store

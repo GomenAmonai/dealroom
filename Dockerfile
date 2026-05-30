@@ -14,4 +14,5 @@ RUN dotnet publish src/DealRoom.Api/DealRoom.Api.csproj -c Release -o /out --no-
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /out .
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "DealRoom.Api.dll"]
