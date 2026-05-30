@@ -1,3 +1,5 @@
+> 🇷🇺 Версия на русском: [README.ru.md](README.ru.md)
+
 # DealRoom
 
 A B2B workspace where two companies manage a deal in one place — chat, documents, approvals, and status tracking.
