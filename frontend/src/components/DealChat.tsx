@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { MessageSquare, Send } from "lucide-react";
 import type { MessageResponse } from "@/lib/types";
 
 interface Props {
@@ -32,30 +33,28 @@ export default function DealChat({ messages, myOrgId, onSend }: Props) {
   }
 
   return (
-    <section className="flex h-[30rem] flex-col rounded-2xl border border-line bg-surface/70 shadow-card">
-      <h2 className="flex items-center gap-2 border-b border-line px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
+    <section className="flex h-[30rem] flex-col rounded-xl border border-line bg-surface shadow-card">
+      <h2 className="flex items-center gap-2 border-b border-line px-5 py-3 text-sm font-semibold text-ink">
+        <MessageSquare size={15} className="text-muted" aria-hidden />
         Chat
       </h2>
 
       <div className="scroll-slim flex-1 space-y-3 overflow-y-auto px-5 py-4">
-        {messages.length === 0 && (
-          <p className="text-sm text-faint">No messages yet. Open the conversation.</p>
-        )}
+        {messages.length === 0 && <p className="text-sm text-faint">No messages yet.</p>}
         {messages.map((message) => {
           const mine = message.senderOrganizationId === myOrgId;
           return (
             <div key={message.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[80%] rounded-xl px-3.5 py-2 text-sm ring-1 ${
-                  mine ? "bg-gold/15 text-fg ring-gold/25" : "bg-surface-raised text-fg ring-line"
+                className={`max-w-[82%] rounded-xl px-3.5 py-2 text-sm ${
+                  mine ? "bg-accent text-paper" : "border border-line bg-paper text-ink"
                 }`}
               >
-                <p className={`text-xs font-medium ${mine ? "text-gold/90" : "text-muted"}`}>
+                <p className={`text-xs font-medium ${mine ? "text-paper/75" : "text-muted"}`}>
                   {message.senderName}
                 </p>
                 <p className="mt-0.5 whitespace-pre-wrap break-words">{message.content}</p>
-                <p className="mt-1 font-mono text-[10px] text-faint">
+                <p className={`mt-1 font-mono text-[10px] ${mine ? "text-paper/65" : "text-faint"}`}>
                   {new Date(message.sentAt).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -74,14 +73,15 @@ export default function DealChat({ messages, myOrgId, onSend }: Props) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Type a message…"
-          className="flex-1 rounded-lg border border-line bg-surface-input px-3.5 py-2.5 text-sm text-fg placeholder-faint outline-none transition focus:border-gold/50 focus:ring-2 focus:ring-gold/15"
+          className="flex-1 rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink placeholder-faint outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15"
         />
         <button
           type="submit"
           disabled={sending}
-          className="rounded-lg bg-gold px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-gold-soft disabled:opacity-60"
+          aria-label="Send message"
+          className="inline-flex items-center justify-center rounded-lg bg-accent px-3.5 text-paper transition hover:bg-accent-hover disabled:opacity-60"
         >
-          Send
+          <Send size={16} aria-hidden />
         </button>
       </form>
     </section>

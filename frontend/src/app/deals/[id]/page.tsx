@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { ArrowLeftRight, Building2, ChevronLeft } from "lucide-react";
 import type { HubConnection } from "@microsoft/signalr";
 import AppShell from "@/components/AppShell";
 import StatusBadge from "@/components/StatusBadge";
@@ -109,53 +110,53 @@ export default function DealPage({ params }: { params: { id: string } }) {
 
   return (
     <AppShell>
-      <Link href="/deals" className="text-sm text-muted transition hover:text-gold">
-        ← All deals
+      <Link
+        href="/deals"
+        className="inline-flex items-center gap-1 text-sm text-muted transition hover:text-ink"
+      >
+        <ChevronLeft size={15} aria-hidden />
+        All deals
       </Link>
 
       {loading && <p className="mt-5 text-sm text-muted">Loading…</p>}
-      {error && <p className="mt-5 text-sm text-rose-300">{error}</p>}
+      {error && <p className="mt-5 text-sm text-rose-600">{error}</p>}
 
       {deal && (
         <>
-          <div className="mt-4 animate-fade-up overflow-hidden rounded-2xl border border-line bg-surface/70 shadow-card">
-            <div className="h-1 bg-gradient-to-r from-gold/80 via-gold/30 to-transparent" />
-            <div className="p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
-                    Deal #{deal.id}
-                  </p>
-                  <h1 className="mt-1.5 font-display text-3xl font-semibold tracking-tight text-fg">
-                    {deal.title}
-                  </h1>
-                  <p className="mt-2 font-mono text-xs text-muted">
-                    {deal.initiatorOrganizationName} <span className="text-gold">↔</span>{" "}
-                    {deal.counterpartyOrganizationName}
-                  </p>
-                </div>
-                <StatusBadge status={deal.status} />
+          <div className="mt-4 animate-fade-up rounded-xl border border-line bg-surface p-6 shadow-card">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="font-mono text-xs text-faint">DEAL-{String(deal.id).padStart(4, "0")}</p>
+                <h1 className="mt-1 truncate text-2xl font-semibold tracking-tight text-ink">
+                  {deal.title}
+                </h1>
+                <p className="mt-2 flex items-center gap-1.5 font-mono text-xs text-muted">
+                  <Building2 size={13} aria-hidden />
+                  {deal.initiatorOrganizationName}
+                  <ArrowLeftRight size={12} className="text-faint" aria-hidden />
+                  {deal.counterpartyOrganizationName}
+                </p>
               </div>
+              <StatusBadge status={deal.status} />
+            </div>
 
-              <div className="mt-6 border-t border-line pt-5">
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-faint">Change status</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {ALLOWED_TRANSITIONS[deal.status].length === 0 && (
-                    <span className="text-sm text-muted">This deal has reached a final state.</span>
-                  )}
-                  {ALLOWED_TRANSITIONS[deal.status].map((status) => (
-                    <button
-                      key={status}
-                      type="button"
-                      onClick={() => changeStatus(status)}
-                      className="rounded-lg border border-line px-3.5 py-1.5 text-sm text-muted transition hover:border-gold/50 hover:bg-gold-dim hover:text-fg"
-                    >
-                      {status}
-                    </button>
-                  ))}
-                </div>
-                {statusError && <p className="mt-3 text-sm text-rose-300">{statusError}</p>}
-              </div>
+            <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-line pt-4">
+              <span className="mr-1 text-xs font-medium text-faint">Move to</span>
+              {ALLOWED_TRANSITIONS[deal.status].length === 0 ? (
+                <span className="text-sm text-muted">This deal is in a final state.</span>
+              ) : (
+                ALLOWED_TRANSITIONS[deal.status].map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => changeStatus(status)}
+                    className="rounded-lg border border-line px-3 py-1.5 text-sm text-muted transition hover:border-accent hover:bg-accent-soft hover:text-accent"
+                  >
+                    {status}
+                  </button>
+                ))
+              )}
+              {statusError && <span className="text-sm text-rose-600">{statusError}</span>}
             </div>
           </div>
 
