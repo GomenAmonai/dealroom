@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using DealRoom.Api.Extensions;
+using DealRoom.Api.Hubs;
 using DealRoom.Core.DTOs;
 using DealRoom.Core.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 
 namespace DealRoom.Api.Endpoints;
 
@@ -37,9 +39,11 @@ public static class DealEndpoints
         .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/{id:int}/status", async (
-            int id, UpdateDealStatusRequest request, ClaimsPrincipal user, IDealService deals) =>
+            int id, UpdateDealStatusRequest request, ClaimsPrincipal user,
+            IDealService deals, IHubContext<DealChatHub> hub) =>
         {
             var result = await deals.UpdateStatusAsync(id, user.GetOrganizationId(), request.Status);
+            await hub.Clients.Group(DealChatHub.GroupName(id)).SendAsync("DealStatusChanged", result);
             return Results.Ok(result);
         })
         .Produces<DealResponse>(StatusCodes.Status200OK)

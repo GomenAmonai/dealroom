@@ -11,5 +11,6 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Deal> Deals { get; set; }
     public DbSet<Document> Documents { get; set; }
+    public DbSet<Message> Messages { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set;}
 }
