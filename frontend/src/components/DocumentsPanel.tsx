@@ -47,42 +47,40 @@ export default function DocumentsPanel({
   }
 
   return (
-    <section className="flex h-[28rem] flex-col rounded-xl border border-slate-200 bg-white">
-      <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-        <h2 className="text-sm font-semibold text-slate-700">Documents</h2>
-        <label className="cursor-pointer rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
-          {uploading ? "Uploading…" : "Upload"}
-          <input
-            ref={inputRef}
-            type="file"
-            className="hidden"
-            disabled={uploading}
-            onChange={handleFile}
-          />
+    <section className="flex h-[30rem] flex-col rounded-2xl border border-line bg-surface/70 shadow-card">
+      <div className="flex items-center justify-between border-b border-line px-5 py-3">
+        <h2 className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
+          <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden />
+          Documents
+        </h2>
+        <label className="cursor-pointer rounded-lg border border-gold/40 bg-gold-dim px-3 py-1.5 text-xs font-medium text-gold transition hover:bg-gold/20">
+          {uploading ? "Uploading…" : "+ Upload"}
+          <input ref={inputRef} type="file" className="hidden" disabled={uploading} onChange={handleFile} />
         </label>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-3">
-        {error && <p className="mb-2 text-sm text-rose-600">{error}</p>}
-        {documents.length === 0 && <p className="text-sm text-slate-400">No documents uploaded yet.</p>}
+      <div className="scroll-slim flex-1 overflow-y-auto px-5 py-4">
+        {error && <p className="mb-2 text-sm text-rose-300">{error}</p>}
+        {documents.length === 0 && <p className="text-sm text-faint">No documents uploaded yet.</p>}
 
         <ul className="space-y-3">
           {documents.map((document) => {
-            const canReview = document.status === "Pending" && document.uploadedByOrganizationId !== myOrgId;
+            const canReview =
+              document.status === "Pending" && document.uploadedByOrganizationId !== myOrgId;
             return (
-              <li key={document.id} className="rounded-lg border border-slate-200 p-3">
+              <li key={document.id} className="rounded-xl border border-line bg-surface-raised/60 p-3.5">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-slate-800">{document.fileName}</p>
-                    <p className="text-xs text-slate-400">{formatBytes(document.sizeBytes)}</p>
+                    <p className="truncate text-sm font-medium text-fg">{document.fileName}</p>
+                    <p className="mt-0.5 font-mono text-xs text-faint">{formatBytes(document.sizeBytes)}</p>
                   </div>
                   <StatusBadge status={document.status} />
                 </div>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => onDownload(document)}
-                    className="rounded-md border border-slate-300 px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                    className="rounded-lg border border-line px-2.5 py-1 text-xs text-muted transition hover:border-gold/40 hover:text-fg"
                   >
                     Download
                   </button>
@@ -91,14 +89,14 @@ export default function DocumentsPanel({
                       <button
                         type="button"
                         onClick={() => onApprove(document.id)}
-                        className="rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-emerald-700"
+                        className="rounded-lg bg-emerald-500/90 px-2.5 py-1 text-xs font-medium text-ink transition hover:bg-emerald-400"
                       >
                         Approve
                       </button>
                       <button
                         type="button"
                         onClick={() => onReject(document.id)}
-                        className="rounded-md bg-rose-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-rose-700"
+                        className="rounded-lg bg-rose-500/90 px-2.5 py-1 text-xs font-medium text-white transition hover:bg-rose-500"
                       >
                         Reject
                       </button>

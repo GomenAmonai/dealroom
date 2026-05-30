@@ -109,50 +109,57 @@ export default function DealPage({ params }: { params: { id: string } }) {
 
   return (
     <AppShell>
-      <Link href="/deals" className="text-sm text-brand-600 hover:underline">
-        ← Back to deals
+      <Link href="/deals" className="text-sm text-muted transition hover:text-gold">
+        ← All deals
       </Link>
 
-      {loading && <p className="mt-4 text-sm text-slate-500">Loading…</p>}
-      {error && <p className="mt-4 text-sm text-rose-600">{error}</p>}
+      {loading && <p className="mt-5 text-sm text-muted">Loading…</p>}
+      {error && <p className="mt-5 text-sm text-rose-300">{error}</p>}
 
       {deal && (
         <>
-          <div className="mt-4 rounded-xl border border-slate-200 bg-white p-5">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-semibold text-slate-900">{deal.title}</h1>
-                <p className="mt-1 text-sm text-slate-500">
-                  {deal.initiatorOrganizationName} ↔ {deal.counterpartyOrganizationName}
-                </p>
+          <div className="mt-4 animate-fade-up overflow-hidden rounded-2xl border border-line bg-surface/70 shadow-card">
+            <div className="h-1 bg-gradient-to-r from-gold/80 via-gold/30 to-transparent" />
+            <div className="p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
+                    Deal #{deal.id}
+                  </p>
+                  <h1 className="mt-1.5 font-display text-3xl font-semibold tracking-tight text-fg">
+                    {deal.title}
+                  </h1>
+                  <p className="mt-2 font-mono text-xs text-muted">
+                    {deal.initiatorOrganizationName} <span className="text-gold">↔</span>{" "}
+                    {deal.counterpartyOrganizationName}
+                  </p>
+                </div>
+                <StatusBadge status={deal.status} />
               </div>
-              <StatusBadge status={deal.status} />
-            </div>
 
-            <div className="mt-4 border-t border-slate-100 pt-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Change status
-              </p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {ALLOWED_TRANSITIONS[deal.status].length === 0 && (
-                  <span className="text-sm text-slate-400">This deal is in a final state.</span>
-                )}
-                {ALLOWED_TRANSITIONS[deal.status].map((status) => (
-                  <button
-                    key={status}
-                    type="button"
-                    onClick={() => changeStatus(status)}
-                    className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:border-brand-300 hover:bg-brand-50"
-                  >
-                    {status}
-                  </button>
-                ))}
+              <div className="mt-6 border-t border-line pt-5">
+                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-faint">Change status</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {ALLOWED_TRANSITIONS[deal.status].length === 0 && (
+                    <span className="text-sm text-muted">This deal has reached a final state.</span>
+                  )}
+                  {ALLOWED_TRANSITIONS[deal.status].map((status) => (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => changeStatus(status)}
+                      className="rounded-lg border border-line px-3.5 py-1.5 text-sm text-muted transition hover:border-gold/50 hover:bg-gold-dim hover:text-fg"
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+                {statusError && <p className="mt-3 text-sm text-rose-300">{statusError}</p>}
               </div>
-              {statusError && <p className="mt-2 text-sm text-rose-600">{statusError}</p>}
             </div>
           </div>
 
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <div className="mt-6 grid animate-fade-up gap-6 lg:grid-cols-2">
             <DocumentsPanel
               documents={documents}
               myOrgId={myOrgId}
