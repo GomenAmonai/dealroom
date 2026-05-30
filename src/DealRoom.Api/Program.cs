@@ -8,6 +8,7 @@ using DealRoom.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +22,17 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IDealRepository, DealRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDealService, DealService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+
+builder.Services.AddSingleton<IMinioClient>(_ => new MinioClient()
+    .WithEndpoint(builder.Configuration["Minio:Endpoint"])
+    .WithCredentials(builder.Configuration["Minio:AccessKey"], builder.Configuration["Minio:SecretKey"])
+    .WithSSL(builder.Configuration.GetValue("Minio:UseSSL", false))
+    .Build());
+builder.Services.AddScoped<IFileStorage, MinioFileStorage>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -59,5 +69,6 @@ app.UseAuthorization();
 app.MapAuthEndpoints();
 app.MapOrganizationEndpoints();
 app.MapDealEndpoints();
+app.MapDocumentEndpoints();
 
 app.Run();

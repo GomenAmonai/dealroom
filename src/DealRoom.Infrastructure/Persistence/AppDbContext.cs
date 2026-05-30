@@ -10,5 +10,6 @@ public class AppDbContext : DbContext
     public DbSet<Organization> Organizations { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Deal> Deals { get; set; }
+    public DbSet<Document> Documents { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set;}
 }
