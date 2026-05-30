@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using DealRoom.Api.Endpoints;
 using DealRoom.Api.Hubs;
 using DealRoom.Api.Middleware;
@@ -15,6 +16,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Serialize/accept enums by name so the frontend works with "Active" instead of 2.
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
